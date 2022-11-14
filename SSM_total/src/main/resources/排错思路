@@ -1,0 +1,5 @@
+1.错误显示创建userController错误。
+2.在测试中我们使用userService进行查询发现正常，说明错误不再dao层和service层
+3.错误出现在spring-mvc，整合的时候没有调用到service层导致控制器创建失败！
+    在applicationContext中我们已经将三层配置文件关联起来
+    web.xml中也有配置文件
