@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>p1</title>
+    <link rel="stylesheet" href="./p1/big_css.css">
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="container">
+        <div id="c_big"><img src="./p1/big/1.jpg" id="c_big_img" alt="图片1"></div>
+        <ul id="c_small" class="c_small">
+            <li><a href="./p1/big/1.jpg"><img src="./p1/small/1.jpg" alt=""></a></li>
+            <li><a href="./p1/big/2.jpg"><img src="./p1/small/2.jpg" alt=""></a></li>
+            <li><a href="./p1/big/3.jpg"><img src="./p1/small/3.jpg" alt=""></a></li>
+            <li><a href="./p1/big/4.jpg"><img src="./p1/small/4.jpg" alt=""></a></li>
+            <li><a href="./p1/big/5.jpg"><img src="./p1/small/5.jpg" alt=""></a></li>
+        </ul>
+    </div>
+    <script>
+        $("#c_small>li>a").click(function (){
+            $("#c_big_img").attr("src",this.href);
+            return false;
+        })
+    </script>
+
+</body>
+</html>
