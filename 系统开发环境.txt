@@ -15,5 +15,18 @@ Path				C:\Program Files\Java\jdk-18.0.1.1\bin
 				D:\VueCLI\global
 
 
+实用网站：	https://cn.bing.com/
+		https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.io/2.4
+		https://github.com/
+		https://sc.chinaz.com/moban/
+		http://layui.org.cn/index.html
+		https://www.bootcss.com/p/layoutit/
+		https://mybatis.org/mybatis-3/zh/index.html
+		https://cn.vuejs.org/
+		https://jquery.cuishifeng.cn/
+		https://spring.io/
+		https://www.grabient.com/
+
+
 总结：配置Java环境，mysql环境，前端Vue框架环境，Javascript运行环境
 				
