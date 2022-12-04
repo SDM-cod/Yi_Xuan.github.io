@@ -15,5 +15,5 @@ Path				C:\Program Files\Java\jdk-18.0.1.1\bin
 				D:\VueCLI\global
 
 
-总结：配置Java环境，mysql环境，前端Vue框架环境
+总结：配置Java环境，mysql环境，前端Vue框架环境，Javascript运行环境
 				
