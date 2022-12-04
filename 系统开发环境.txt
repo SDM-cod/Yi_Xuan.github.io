@@ -1,0 +1,19 @@
+JAVA_HOME		C:\Program Files\Java\jdk-18.0.1.1
+M2_HOME			D:\dev\apache-maven-3.8.4\bin
+MAVEN_HOME		D:\dev\apache-maven-3.8.4
+MYSQL_HOME		D:\mysql_new\mysql-8.0.27-winx64
+NODE_HOME		D:\VueCLI\node_modules
+
+CLASSPATH			.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar;
+
+Path				C:\Program Files\Java\jdk-18.0.1.1\bin
+				%JAVA_HOME%\bin
+				%MAVEN_HOME%\bin
+				D:\mysql_new\mysql-8.0.27-winx64\bin
+				D:\VueCLI\
+				%NODE_PATH%
+				D:\VueCLI\global
+
+
+总结：配置Java环境，mysql环境，前端Vue框架环境
+				
