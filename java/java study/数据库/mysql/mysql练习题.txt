@@ -1,0 +1,410 @@
+-- 建表语句
+CREATE TABLE `student`
+(
+    `id`   int(10)     DEFAULT NULL COMMENT '学号',
+    `name` varchar(10) DEFAULT NULL COMMENT '姓名',
+    `date` date        DEFAULT NULL COMMENT '出生日期',
+    `sex`  varchar(2)  DEFAULT NULL COMMENT '性别'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+  CREATE TABLE `score`
+(
+    `c_id`   int(10)     DEFAULT NULL COMMENT '课程号',
+    `s_id` int(10) DEFAULT NULL COMMENT '学号',
+    `score` int(10)        DEFAULT NULL COMMENT '分数'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+CREATE TABLE `course`
+(
+    `id`   int(10)     DEFAULT NULL COMMENT '课程号',
+    `name` VARCHAR(10) DEFAULT NULL COMMENT '课程名',
+    `t_id` int(10)        DEFAULT NULL COMMENT '教师号'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+CREATE TABLE `teacher`
+(
+    `id`   int(10)     DEFAULT NULL COMMENT '教师号',
+    `name` VARCHAR(10) DEFAULT NULL COMMENT '教师名'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+-- 插入数据
+insert into student(id,name,date,sex)
+values('0001' , '猴子' , '1989-01-01' , '男');
+
+insert into student(id,name,date,sex)
+values('0002' , '猴子' , '1990-12-21' , '女');
+
+insert into student(id,name,date,sex)
+values('0003' , '马云' , '1991-12-21' , '男');
+
+insert into student(id,name,date,sex)
+values('0004' , '王思聪' , '1990-05-20' , '男');
+
+insert into score(s_id,c_id,score)
+values('0001' , '0001' , 80);
+
+insert into score(s_id,c_id,score)
+values('0001' , '0002' , 90);
+
+insert into score(s_id,c_id,score)
+values('0001' , '0003' , 99);
+
+insert into score(s_id,c_id,score)
+values('0002' , '0002' , 60);
+
+insert into score(s_id,c_id,score)
+values('0002' , '0003' , 80);
+
+insert into score(s_id,c_id,score)
+values('0003' , '0001' , 80);
+
+insert into score(s_id,c_id,score)
+values('0003' , '0002' , 80);
+
+insert into score(s_id,c_id,score)
+values('0003' , '0003' , 80);
+
+insert into course(id,name,t_id)
+values('0001' , '语文' , '0002');
+
+insert into course(id,name,t_id)
+values('0002' , '数学' , '0001');
+
+insert into course(id,name,t_id)
+values('0003' , '英语' , '0003');
+
+-- 教师表：添加数据
+insert into teacher(id,name)
+values('0001' , '孟扎扎');
+
+insert into teacher(id,name)
+values('0002' , '马化腾');
+
+-- 这里的教师姓名是空值（null）
+insert into teacher(id,name)
+values('0003' , null);
+
+-- 这里的教师姓名是空字符串（''）
+insert into teacher(id,name)
+values('0004' , '');
+
+-- 查询
+
+# 查询姓猴的学生名单
+select *
+from student where name like '猴%';
+# 查询姓名中最后一个字是猴的学生名单
+select *
+from student where name like '%猴';
+# 查询姓名中带猴的学生名单
+select *
+from student where name like '%猴%';
+# 查询姓孟老师的个数
+select count(*)
+from teacher where name like '孟%';
+# 查询课程编号为002的总成绩
+select sum(score)
+from score where c_id = 002;
+# 查询选了课程的学生人数
+select count(distinct s_id) as 学生人数
+from score;
+# × 查询各科成绩的最高分和最低分  group by：分组，排序，去重
+select c_id,max(score) ,min(score)
+from score group by c_id;
+# 查询每门课程被选修的学生数
+select c_id,count(s_id)
+from score group by c_id;
+# × 查询男生女生人数    可用group by 先进行分组，再用count进行统计
+select sex,count(*)
+from student group by sex;
+# 查询平均成绩大于60分学生的学号和平均成绩
+select s_id,avg(score)
+from score group by s_id having avg(score)>75;
+# 查询至少选修两门课程的学生学号
+select s_id,count(c_id)
+from score group by s_id having count(c_id) > 1;
+# 查询同名同姓学生名单并统计同名人数
+select name,count(*)
+from student group by name having count(*)>=2;
+# 查询不及格的课程并按课程号从大到小排列
+select c_id
+from score where score<60 order by c_id desc;
+# 查询每门课程的平均成绩，结果按平均成绩升序排序，平均成绩相同时，按课程号降序排列     并列判断条件，直接在后面接
+select c_id,avg(score)
+from score group by c_id order by avg(score),c_id desc ;
+# 检索课程编号为“0004”且分数小于60的学生学号，结果按按分数降序排列
+select s_id
+from score where c_id = 0004 and score <60 order by score desc ;
+# 统计每门课程的学生选修人数(超过2人的课程才统计);要求输出课程号和选修人数，查询结果按人数降序排序，若人数相同，按课程号升序排序
+select c_id,count(s_id)
+from score group by c_id having count(s_id) > 2 order by count(s_id) desc,c_id ;
+# × 查询两门以上不及格课程的同学的学号及其平均成绩；两门and不及格，不及格用where，两门统计用having判断
+select s_id,avg(score)
+from score where score<60 group by s_id having count(c_id) >= 2;
+# 查询所有课程成绩小于60分学生的学号、姓名
+select s.id,s.name
+from score sc, student s where sc.s_id = s.id and sc.score < 60;
+# × 查询没有学全所有课的学生的学号、姓名      没有学完所有课 等价于 学生学的课数<课程的总数
+select id, name
+from student where id in (
+    select s_id
+    from score group by s_id
+    having count(c_id) < (select count(*) from course)
+    );
+# 查询出只选修了两门课程的全部学生的学号和姓名
+select id,name
+from student where id in (
+    select s_id
+    from score group by s_id having count(c_id)=2
+    );
+# 查询1990年出生的学生名单    时间条件判断 year / month
+select id,name
+from student where year(date) = 1990;
+# 查询各科成绩前两名的记录
+(select c_id,score
+from score where c_id=1 group by c_id,score limit 2)
+union all
+(select c_id,score
+ from score where c_id=2 group by c_id,score limit 2)
+union all
+(select c_id,score
+ from score where c_id=3 group by c_id,score limit 2);
+# 查询所有学生的学号、姓名、选课数、总成绩
+select s.id,s.name, count(sc.c_id),sum(sc.score)
+from student s left join score sc on  s.id=sc.s_id group by s.id,s.name;
+# 查询平均成绩大于85的所有学生的学号、姓名和平均成绩
+select sc.s_id,s.name,avg(sc.score)
+from score sc left join student s on sc.s_id = s.id group by sc.s_id, s.name having avg(sc.score)>85;
+select sc.s_id,s.name,avg(sc.score)
+from score sc, student s where sc.s_id=s.id group by sc.s_id,s.name having avg(sc.score)>85;
+# 查询学生的选课情况：学号，姓名，课程号，课程名称
+select s.id,s.name,sc.c_id,c.name
+from student s left join score sc on s.id=sc.s_id left join course c on sc.c_id = c.id group by s.id, s.name, sc.c_id, c.name;
+select s.id,s.name,sc.c_id,c.name
+from student s,score sc,course c where s.id = sc.s_id and sc.c_id=c.id;
+# × 查询出每门课程的及格人数和不及格人数    增加列的方式：函数表达式，case ，if
+select c_id,
+       sum(IF(score < 60, 1, 0)) as notpass,
+       sum(if(score>=60,1,0)) as pass
+from score group by c_id;
+# × 使用分段[100-85],[85-70],[70-60],[<60]来统计各科成绩，分别统计：各分数段人数，课程号和课程名称
+select sc.c_id,c.name,
+       sum(IF(sc.score between 85 and 100,1,0)) as high,
+       sum(IF(sc.score between 70 and 85,1,0)) as midhigh,
+       sum(IF(sc.score between 60 and 60,1,0)) as mid,
+       sum(IF(sc.score<60,1,0)) as low
+from score sc,course c where sc.c_id = c.id group by sc.c_id, c.name;
+# 查询课程编号为0003且课程成绩在80分以上的学生的学号和姓名
+select s_id, s.name
+from score sc,
+     student s
+where sc.s_id = s.id
+  and c_id = 3
+  and score > 80;
+# × 列转换
+select s_id,
+       max(IF(c_id = 1, score, 0)) as c_id1,
+       max(IF(c_id = 2, score, 0)) as c_id2,
+       max(IF(c_id = 3, score, 0)) as c_id3
+from score
+group by s_id;
+# 根据具体条件找出重复数据
+select *
+from student where name = '猴子' and sex ='男';
+# 根据条件限制删除数据，固定行数，默认保留最大的
+delete from student where name = '猴子' and sex = '男' limit 3;
+# 找出所有重复的数据
+Select * From student Where name In (Select name From student Group By name Having Count(*) >1);
+# 找出最大id数据，无论是否重复
+Select * From student Where ID In (Select max(id) From student Group By name);
+# 删除最小重复id
+Delete from student Where ID Not In(
+    select a.id from (Select Max(ID) id From student Group By name) a);
+
+
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+
+
+
+Dead or Alive Xtreme Venus Vacation
+===================================
+
+This is not to be confused with the console exclusive game Dead or Alive Xtreme
+3: Venus. This is a free to play casual volleyball *management* game, and lacks
+the volleyball gameplay or minigames of its console counterpart and has no
+English translation, but - at least it is on PC. For help with installing this
+game refer to [this article][1] (the camera mode of the Google Translate
+Android app may also be helpful for any steps that have changed since this
+article was written), and [the beginners guide][2] to understand the game
+itself.
+
+[1]: https://www.dualshockers.com/dead-alive-xtreme-venus-vacation-guide/
+[2]: https://docs.google.com/spreadsheets/d/1rkWZB4DcKsKydZgpZzXrj7f1MGXRMJ3GDiqmEXeVQUw/edit#gid=1887486128
+
+Costume Mods
+------------
+This mod primarily adds support for NVIDIA 3D Vision to the game, but it is
+also required for the costume mods available for this game. If this is why you
+are here you can ignore any of the information below that is specific to 3D
+Vision users and just follow the instructions on the website that led you here.
+
+This mod by itself will not change any costumes - for that you will need mod
+packs available from elsewhere and extract them into the Mods directory. You
+don't need to restart the game after installing a new mod - just press F10 in
+game to load any new mods.
+
+Some mod packs ship with optional parts of the mods that are not enabled by
+default - look for any files or directories in the mod pack that is named
+"DISABLED something", and remove the "DISABLED" from the filename to enable it.
+
+Installing (3D Vision + Costume Mod users)
+------------------------------------------
+1. Extract the contents of the zip file to the game directory.
+
+2. In the launcher (not the game), open settings (2nd button from the top) and
+   change everything to the left-most option (lower quality options are known
+   not to work).
+
+3. **IMPORTANT (3D Vision Users only): Once the main game launches, press F7 to
+   switch to exclusive full screen mode to engage 3D. Repeat this anytime you
+   alt+tab out of the game to re-engage 3D.**
+
+Keys (3D Vision + Costume Mod Users)
+------------------------------------
+- F1: Show help
+- F2: Toggle costume mods
+- Shift+F2: Cycle costume mod shadow modes (on/off/original)
+- Mouse back button: Toggle HUD visibility
+- Ctrl+F9: 3DMigoto performance monitor
+
+Keys (3D Vision Users Only)
+---------------------------
+- F7: Full Screen
+- ~: Toggle auto-convergence feature on and off
+- Ctrl+F5: Reduce popout when auto-convergence is on
+- Ctrl+F6: Increase popout when auto-convergence is on
+
+Auto-Convergence (3D Vision Users Only)
+---------------------------------------
+This fix uses my new auto-convergence feature (first introduced in my Life is
+Strange: Before the Storm fix) to automatically adjust the convergence while
+playing to suit the various scenes and quick camera angles changes this game
+does. For this game I have set it to try to keep everything inside the screen
+(behind the HUD), while still maximising the 3D effect in any given scene.
+
+The auto-convergence feature replaces the traditional meaning of 3D Vision's
+convergence setting with a "popout" setting, which is similar to convergence,
+but gives better results with a wider range of camera angles, monitor sizes and
+viewing distances. The same keys that normally adjust the convergence will
+adjust the popout instead when auto-convergence is enabled, and the popout
+value will be displayed on screen while adjusting it.
+
+This feature has a number of tunable parameters, which can be tweaked by
+editing the [Constants] section in the d3dx.ini. These tunables include things
+such as the initial popout, minimum and maximum allowable convergence values,
+thresholds for how far the convergence is allowed to get away from the target,
+and threshold for the anti-judder countermeasure.
+
+3D Vision Fixes
+---------------
+- Lights & shadows
+- Water
+- HUD
+- Added automatic convergence
+
+3D Vision Update v1.1
+---------------------
+- Fixed ripples
+- Fixed auto-convergence popout bias changing on full screen
+- Use a lower convergence preset when Burst is activated
+
+Update v1.2
+-----------
+- Fixed shadow glitch
+- This fix now forms the basis for third party costume mods
+
+Update v1.4
+-----------
+- Major 3DMigoto update (conditional logic, performance monitor)
+- Auto-convergence performance cost will be skipped when 3D Vision is disabled
+- Added toggle keys for costume mods and shadows (try cycling shadow modes if performance is an issue)
+- New built in help shown by pressing F1
+- Enabled costume mods for missing costume + shadow shaders
+- Enabled costume and fingernail texture replacement mods
+- Fix cases where a shadow could go missing from a costume mod
+- HUD will always be shown in burst mode
+
+Update v1.5
+-----------
+- Fix missing legs in some costume mods
+- F2/Shift+F2 hotkeys now show status in overlay
+
+Update v1.6
+-----------
+- Re-fixed lighting & auto-convergence broken by game update
+
+Update v1.7
+-----------
+- Updated costume mod and 3D Vision ripple fix for compatibility with DOAXVV
+  December 6th update
+- Update to 3DMigoto 1.3.12 (adds vertex buffer hunting keys, clipboard marking
+  mode, etc)
+- 3D Vision: Made specular reflections on some (not all) materials render at
+  their accurate depth instead of surface depth.
+- 3D Vision: Tweaked auto-convergence settings for more comfort in some
+  cutscenes.
+
+Hotfix v1.8
+-----------
+- Fixed pink fingernails
+- Added another missing costume shader
+
+Known Issues (3D Vision Users Only)
+-----------------------------------
+The news and Gacha probabilities windows and certain text boxes are blank while
+in full screen. Alt+tab out of the game (not just disabling 3D) and they will
+appear, and press F7 to re-enable 3D when done, but of course it is all in
+Japanese anyway. Visit [this site][3] for English translations.
+
+[3]: http://www.doax-venusvacation.com
+
+Side-by-Side / Top-and-Bottom Output Modes (3D Vision Users Only)
+-----------------------------------------------------------------
+This fix is bundled with the SBS / TAB output mode support in 3DMigoto. To
+enable it, edit the d3dx.ini, find the [Present] section and uncomment (remove
+the semicolon) the line that reads:
+
+    run = CustomShader3DVision2SBS
+
+Then, in game press F11 to cycle output modes. If using 3D TV Play, set the
+nvidia control panel to output checkerboard to remove the 720p limitation.
+
+Like my Work?
+-------------
+Fixing games takes a lot of time and effort, and I am currently otherwise
+unemployed largely due to my ongoing [battle with mental health issues][4].
+
+If you are in a position where you are able to do so, please consider
+[supporting me with a monthly donation on Patreon][5], and thanks again to
+those that already do! While I prefer the more stable monthly support that
+Patreon offers, I can of course understand that some of you prefer to make
+one-off donations when you can, and for that you can use [my Paypal][6]. As a
+reminder, these donations are to support me personally, and do not go to other
+modders on this site.
+
+[4]: https://forums.geforce.com/default/topic/1000942/3d-vision/where-has-darkstarsword-been-/
+[5]: https://www.patreon.com/DarkStarSword
+[6]: https://www.paypal.me/DarkStarSword
+
+_This mod is created with 3DMigoto (primarily written by myself, Bo3b and
+Chiri), and uses Flugan's Assembler. See [here][7] for a full list of
+contributors to 3DMigoto_
+
+[7]: https://darkstarsword.net/3Dmigoto-stats/authors.html
+
